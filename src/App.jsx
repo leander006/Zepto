@@ -3,6 +3,7 @@ import { useState } from "react";
 function App() {
   const [inputValue, setInputValue] = useState("");
   const [chips, setChips] = useState([]);
+  const [latestChipIndex, setLatestChipIndex] = useState(null);
   const [focused, setFocused] = useState(false);
   const [availableItems, setAvailableItems] = useState([
     {
@@ -56,70 +57,79 @@ function App() {
     setAvailableItems(updatedAvailableItems);
     setInputValue("");
   };
-  console.log(chips, "chips");
-  const handleChipRemove = (chip) => {
-    const updatedChips = chips.filter((c) => c !== chip);
-    const updatedAvailableItems = [...availableItems, chip];
-
+  const handleChipRemove = (index) => {
+    const updatedChips = chips.filter((_, i) => i !== index);
     setChips(updatedChips);
-    setAvailableItems(updatedAvailableItems);
+    setLatestChipIndex(null);
   };
 
   const handleBackspace = () => {
     if (inputValue === "" && chips.length > 0) {
-      const lastChip = chips[chips.length - 1];
-      handleChipRemove(lastChip);
+      if (latestChipIndex === null) {
+        // First Backspace Press: Change color of the latest element
+        setLatestChipIndex(chips.length - 1);
+      } else {
+        // Second Backspace Press: Remove the latest element
+        handleChipRemove(latestChipIndex);
+      }
     }
   };
+
   return (
     <div className="container mx-auto mt-8">
-      <div className="flex flex-col w-64">
-        <div className="relative">
-          <input
-            type="text"
-            onFocus={onFocus}
-            value={inputValue}
-            onChange={handleInputChange}
-            onKeyDown={(e) => e.key === "Backspace" && handleBackspace()}
-            placeholder="Type to search..."
-            className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-          />
-          {focused && (
-            <div className="absolute top-12 w-full bg-white border border-gray-300 rounded mt-1">
-              {availableItems
-                .filter((item) =>
-                  item.name.toLowerCase().includes(inputValue.toLowerCase())
-                )
-                .map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-2 flex items-center cursor-pointer hover:bg-blue-100"
-                    onClick={() => handleItemClick(item)}
-                  >
-                    <img
-                      className="mr-2 rounded-full w-8 h-8"
-                      src={item.image}
-                      alt={item.name}
-                    />
-                    <h1 className="font-bold"> {item.name}</h1>
-                  </div>
-                ))}
-            </div>
-          )}
-        </div>
-        <div className="flex flex-wrap mt-2">
+      <div className="relative flex border items-center border-gray-300 rounded ">
+        <div className="flex items-center ">
           {chips.map((chip) => (
             <div
               key={chip.id}
-              className="flex items-center bg-blue-500 text-white rounded m-1 p-2"
+              className={`flex items-center bg-gray-500 text-white rounded m-1 p-1 ${
+                chip.id === latestChipIndex ? "bg-yellow-300" : ""
+              }`}
             >
-              {chip.name}
-              <button onClick={() => handleChipRemove(chip)} className="ml-2">
-                X
-              </button>
+              <img
+                className="mr-2 rounded-full w-4 h-4"
+                src={chip.image}
+                alt={chip.name}
+              />
+              <h1 className=""> {chip.name}</h1>
+              <i
+                onClick={() => handleChipRemove(chip)}
+                className="fa-solid fa-xl ml-2 mr-3 cursor-pointer fa-xmark"
+              ></i>
             </div>
           ))}
         </div>
+        <input
+          type="text"
+          value={inputValue}
+          onFocus={onFocus}
+          onKeyDown={(e) => e.key === "Backspace" && handleBackspace()}
+          onChange={handleInputChange}
+          placeholder="Type to search..."
+          className="w-full px-4 py-2 focus:outline-none focus:border-blue-500"
+        />
+        {focused && (
+          <div className="absolute top-12 w-full bg-white border border-gray-300 rounded mt-1">
+            {availableItems
+              .filter((item) =>
+                item.name.toLowerCase().includes(inputValue.toLowerCase())
+              )
+              .map((item) => (
+                <div
+                  key={item.id}
+                  className="p-2 flex items-center cursor-pointer hover:bg-blue-100"
+                  onClick={() => handleItemClick(item)}
+                >
+                  <img
+                    className="mr-2 rounded-full w-8 h-8"
+                    src={item.image}
+                    alt={item.name}
+                  />
+                  <h1 className="font-bold"> {item.name}</h1>
+                </div>
+              ))}
+          </div>
+        )}
       </div>
     </div>
   );
