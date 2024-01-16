@@ -12,13 +12,13 @@ function Search(){
   const [latestChipIndex, setLatestChipIndex] = useState<number | null>(null);
   const [focused, setFocused] = useState<boolean>(false);
   const [availableItems, setAvailableItems] = useState<Chip[]>([
-    { id: 1, name: "Jone Doe", image: "./src/assets/pro1.jpeg" },
-    { id: 2, name: "Aryan Khan", image: "./src/assets/pro2.jpeg" },
-    { id: 3, name: "Jan Doe", image: "./src/assets/pro3.png" },
-    { id: 4, name: "Salman Khan", image: "./src/assets/pro4.png" },
-    { id: 5, name: "John Miller", image: "./src/assets/pro5.jpeg" },
-    { id: 6, name: "Rohit Sharma", image: "./src/assets/pro6.jpeg" },
-    { id: 7, name: "Miya Kapoor", image: "./src/assets/pro7.jpeg" },
+    { id: 1, name: "Jone Doe", image: "./assets/pro1.jpeg" },
+    { id: 2, name: "Aryan Khan", image: "./assets/pro2.jpeg" },
+    { id: 3, name: "Jan Doe", image: "./assets/pro3.png" },
+    { id: 4, name: "Salman Khan", image: "./assets/pro4.png" },
+    { id: 5, name: "John Miller", image: "./assets/pro5.jpeg" },
+    { id: 6, name: "Rohit Sharma", image: "./assets/pro6.jpeg" },
+    { id: 7, name: "Miya Kapoor", image: "./assets/pro7.jpeg" },
   ]);
 
   const onFocus = (): void => setFocused(true);
