@@ -1,55 +1,33 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-function App() {
-  const [inputValue, setInputValue] = useState("");
-  const [chips, setChips] = useState([]);
-  const [latestChipIndex, setLatestChipIndex] = useState(null);
-  const [focused, setFocused] = useState(false);
-  const [availableItems, setAvailableItems] = useState([
-    {
-      id: 1,
-      name: "Jone",
-      image: "./src/assets/pro1.jpeg",
-    },
-    {
-      id: 2,
-      name: "Ab",
-      image: "./src/assets/pro2.jpeg",
-    },
-    {
-      id: 3,
-      name: "Jan",
-      image: "./src/assets/pro3.png",
-    },
-    {
-      id: 4,
-      name: "Knock",
-      image: "./src/assets/pro4.png",
-    },
-    {
-      id: 5,
-      name: "Frog",
-      image: "./src/assets/pro5.jpeg",
-    },
-    {
-      id: 6,
-      name: "Tiya",
-      image: "./src/assets/pro6.jpeg",
-    },
-    {
-      id: 7,
-      name: "Miya",
-      image: "./src/assets/pro7.jpeg",
-    },
+interface Chip {
+  id: number;
+  name: string;
+  image: string;
+}
+
+function Search(){
+  const [inputValue, setInputValue] = useState<string>("");
+  const [chips, setChips] = useState<Chip[]>([]);
+  const [latestChipIndex, setLatestChipIndex] = useState<number | null>(null);
+  const [focused, setFocused] = useState<boolean>(false);
+  const [availableItems, setAvailableItems] = useState<Chip[]>([
+    { id: 1, name: "Jone Doe", image: "./src/assets/pro1.jpeg" },
+    { id: 2, name: "Aryan Khan", image: "./src/assets/pro2.jpeg" },
+    { id: 3, name: "Jan Doe", image: "./src/assets/pro3.png" },
+    { id: 4, name: "Salman Khan", image: "./src/assets/pro4.png" },
+    { id: 5, name: "John Miller", image: "./src/assets/pro5.jpeg" },
+    { id: 6, name: "Rohit Sharma", image: "./src/assets/pro6.jpeg" },
+    { id: 7, name: "Miya Kapoor", image: "./src/assets/pro7.jpeg" },
   ]);
 
-  const onFocus = () => setFocused(true);
+  const onFocus = (): void => setFocused(true);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInputValue(e.target.value);
   };
 
-  const handleItemClick = (item) => {
+  const handleItemClick = (item: Chip): void => {
     const updatedChips = [...chips, item];
     const updatedAvailableItems = availableItems.filter((i) => i !== item);
 
@@ -57,33 +35,38 @@ function App() {
     setAvailableItems(updatedAvailableItems);
     setInputValue("");
   };
-  const handleChipRemove = (index) => {
-    const updatedChips = chips.filter((_, i) => i !== index);
-    setChips(updatedChips);
-    setLatestChipIndex(null);
-  };
 
-  const handleBackspace = () => {
+  const handleChipRemove = (chip: Chip): void => {
+    const updatedChips = chips.filter((c) => c !== chip);
+    const updatedAvailableItems: Chip[] = [...availableItems, chip];
+  
+    setChips(updatedChips);
+    setAvailableItems(updatedAvailableItems);
+  };
+  const handleBackspace = (): void => {
+    console.log(latestChipIndex);
+    
     if (inputValue === "" && chips.length > 0) {
       if (latestChipIndex === null) {
-        // First Backspace Press: Change color of the latest element
-        setLatestChipIndex(chips.length - 1);
+        let idx =chips[chips.length - 1]
+        setLatestChipIndex(idx.id);
       } else {
-        // Second Backspace Press: Remove the latest element
-        handleChipRemove(latestChipIndex);
+        let idx =chips[chips.length - 1]
+        handleChipRemove(idx);
+        setLatestChipIndex(null);
       }
     }
   };
 
   return (
-    <div className="container mx-auto mt-8">
+    <div className="container mx-auto mt-2">
       <div className="relative flex border items-center border-gray-300 rounded ">
         <div className="flex items-center ">
           {chips.map((chip) => (
             <div
               key={chip.id}
-              className={`flex items-center bg-gray-500 text-white rounded m-1 p-1 ${
-                chip.id === latestChipIndex ? "bg-yellow-300" : ""
+              className={`flex items-center text-black rounded m-1 p-1 ${
+                chip.id === latestChipIndex ? "bg-yellow-300" : "bg-gray-300"
               }`}
             >
               <img
@@ -91,7 +74,7 @@ function App() {
                 src={chip.image}
                 alt={chip.name}
               />
-              <h1 className=""> {chip.name}</h1>
+              <p className="font-bold text-xs w-fit "> {chip.name}</p>
               <i
                 onClick={() => handleChipRemove(chip)}
                 className="fa-solid fa-xl ml-2 mr-3 cursor-pointer fa-xmark"
@@ -106,7 +89,7 @@ function App() {
           onKeyDown={(e) => e.key === "Backspace" && handleBackspace()}
           onChange={handleInputChange}
           placeholder="Type to search..."
-          className="w-full px-4 py-2 focus:outline-none focus:border-blue-500"
+          className="w-full px-4 rounded py-2 focus:outline-none focus:border-blue-500"
         />
         {focused && (
           <div className="absolute top-12 w-full bg-white border border-gray-300 rounded mt-1">
@@ -135,4 +118,8 @@ function App() {
   );
 }
 
-export default App;
+export default Search;
+
+
+
+
