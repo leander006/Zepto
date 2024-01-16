@@ -9,6 +9,7 @@ interface Chip {
 function Search(){
   const [inputValue, setInputValue] = useState<string>("");
   const [chips, setChips] = useState<Chip[]>([]);
+  const [selectedChipsCount, setSelectedChipsCount] = useState(0)
   const [latestChipIndex, setLatestChipIndex] = useState<number | null>(null);
   const [focused, setFocused] = useState<boolean>(false);
   const [availableItems, setAvailableItems] = useState<Chip[]>([
@@ -33,6 +34,7 @@ function Search(){
 
     setChips(updatedChips);
     setAvailableItems(updatedAvailableItems);
+    setSelectedChipsCount(selectedChipsCount+1);
     setInputValue("");
   };
 
@@ -60,12 +62,13 @@ function Search(){
 
   return (
     <div className="container mx-auto mt-2">
-      <div className="relative flex border items-center border-gray-300 rounded ">
-        <div className="flex items-center ">
+      <div className="flex justify-center">
+        <div className="flex flex-col">
+        <div className={`grid grid-cols-3`}>
           {chips.map((chip) => (
             <div
               key={chip.id}
-              className={`flex items-center text-black rounded m-1 p-1 ${
+              className={`flex items-center w-fit text-black rounded m-1 p-1 ${
                 chip.id === latestChipIndex ? "bg-yellow-300" : "bg-gray-300"
               }`}
             >
@@ -74,7 +77,7 @@ function Search(){
                 src={chip.image}
                 alt={chip.name}
               />
-              <p className="font-bold text-xs w-fit "> {chip.name}</p>
+              <p className="font-bold"> {chip.name}</p>
               <i
                 onClick={() => handleChipRemove(chip)}
                 className="fa-solid fa-xl ml-2 mr-3 cursor-pointer fa-xmark"
@@ -89,10 +92,10 @@ function Search(){
           onKeyDown={(e) => e.key === "Backspace" && handleBackspace()}
           onChange={handleInputChange}
           placeholder="Type to search..."
-          className="w-full px-4 rounded py-2 focus:outline-none focus:border-blue-500"
+          className="w-full px-4 border border-x-0 border-t-0 py-2 focus:outline-none focus:border-blue-500"
         />
         {focused && (
-          <div className="absolute top-12 w-full bg-white border border-gray-300 rounded mt-1">
+          <div className= "w-full bg-white border border-gray-300 rounded mt-1">
             {availableItems
               .filter((item) =>
                 item.name.toLowerCase().includes(inputValue.toLowerCase())
@@ -113,6 +116,8 @@ function Search(){
               ))}
           </div>
         )}
+        </div>
+       
       </div>
     </div>
   );
